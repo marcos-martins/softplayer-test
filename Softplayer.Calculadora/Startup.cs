@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Softplayer.Calculadora
 {
@@ -26,6 +27,19 @@ namespace Softplayer.Calculadora
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            // Registering Swagger Generator
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Title = "Calculadora",
+                    Version = "v1",
+                    Description = "Soft Player Calculadora",
+                    TermsOfService = "None",
+                    Contact = new Contact() { Name = "SoftPlan", Email = "contato@softplan.com", Url = "www.softplan.com.br" }
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,8 +54,17 @@ namespace Softplayer.Calculadora
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
+            // Serves generated swagger document as JSON endpoint. 
+            app.UseSwagger();
 
-            app.UseHttpsRedirection();
+            // Serves the Swagger UI
+            app.UseSwaggerUI(c =>
+            {
+                // specifying the Swagger JSON endpoint.
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Calculadora");
+            });
+            
             app.UseMvc();
         }
     }
