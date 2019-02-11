@@ -43,6 +43,12 @@ namespace Softplayer.Calculadora
                     TermsOfService = "None",
                     Contact = new Contact() { Name = "SoftPlan", Email = "contato@softplan.com", Url = "www.softplan.com.br" }
                 });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
             });
             
             //Mock dataBase
