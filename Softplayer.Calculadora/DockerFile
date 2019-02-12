@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.2-sdk AS build
+FROM microsoft/dotnet:2.2-sdk-alpine3.8 AS build
 WORKDIR /app
 
 COPY *.csproj ./
@@ -7,8 +7,8 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o out
 
-FROM microsoft/dotnet:2.2-aspnetcore-runtime AS base
+FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine3.8 AS base
 WORKDIR /app
 COPY --from=build /app/out .
 
-ENTRYPOINT ["dotnet", "Softplayer.Calculadora.dll"]
+CMD dotnet Softplayer.Calculadora.dll --urls "http://*:$PORT"
