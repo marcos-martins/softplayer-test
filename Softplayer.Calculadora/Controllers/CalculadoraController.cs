@@ -24,11 +24,12 @@ namespace Softplayer.Calculadora.Controllers
         /// <param name="queryCalculo"></param>
         /// <returns>Montante</returns>
         [HttpGet, ActionName("calculajuros")]
-        public ActionResult<decimal> CalcularJuros([FromQuery] QueryCalculoJuros queryCalculo)
-        {
+        public ActionResult<string> CalcularJuros([FromQuery] QueryCalculoJuros queryCalculo)
+        {            
             if (ModelState.IsValid)
-            {
-                return _calculadoraServico.CalcularJurosCompostos(queryCalculo.valorinicial,queryCalculo.meses);
+            {              
+                decimal montante = _calculadoraServico.CalcularJurosCompostos(queryCalculo.valorinicial,queryCalculo.meses);
+                return string.Format("{0:0.00}", montante);
             }
 
             return BadRequest(ModelState); 
