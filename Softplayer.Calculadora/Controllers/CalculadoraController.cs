@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Softplayer.Calculadora.Model;
+using Softplayer.Calculadora.Repositorio;
 using Softplayer.Calculadora.Servicos;
 
 namespace Softplayer.Calculadora.Controllers
@@ -13,9 +14,11 @@ namespace Softplayer.Calculadora.Controllers
     public class CalculadoraController : ControllerBase
     {
         private readonly ICalculadoraServico _calculadoraServico;
-        public CalculadoraController(ICalculadoraServico calculadoraServico)
+        private readonly ICalculoRepositorio _calculoRepositorio;
+        public CalculadoraController(ICalculadoraServico calculadoraServico, ICalculoRepositorio calculoRepositorio)
         {
             _calculadoraServico = calculadoraServico;
+            _calculoRepositorio = calculoRepositorio;
         }
        
         /// <summary>
@@ -27,8 +30,9 @@ namespace Softplayer.Calculadora.Controllers
         public ActionResult<string> CalcularJuros([FromQuery] QueryCalculoJuros queryCalculo)
         {            
             if (ModelState.IsValid)
-            {              
-                decimal montante = _calculadoraServico.CalcularJurosCompostos(queryCalculo.valorinicial,queryCalculo.meses);
+            {
+                double taxa = _calculoRepositorio.ObterTaxa();              
+                decimal montante = _calculadoraServico.CalcularJurosCompostos(queryCalculo.valorinicial,taxa,queryCalculo.meses);
                 return string.Format("{0:0.00}", montante);
             }
 
